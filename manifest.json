@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Minimal Manifest",
+  "version": "1.0.0",
+  "description": "A basic example extension with only required keys",
+  "permissions": [
+    "tabs",
+    "storage", "declarativeContent", "activeTab", "scripting"
+  ],
+  "host_permissions": [
+    "http://excalidraw.com/*",
+    "https://excalidraw.com/*"
+  ],
+  "action": {
+    "default_popup": "index.html"
+  }
+}
