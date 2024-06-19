@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Minimal Manifest",
+  "name": "Excalidraw Save",
   "version": "1.0.0",
-  "description": "A basic example extension with only required keys",
+  "description": "A simple extension to manage and save excalidraw saves",
   "permissions": [
     "tabs",
     "storage", "declarativeContent", "activeTab", "scripting"

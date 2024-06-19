@@ -8,9 +8,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const tab = tabs[0]; 
         console.log(tab)
 
-        if (tab.url != "https://excalidraw.com/") return
+        if (tab.url != "https://excalidraw.com/") {
 
-        chrome.scripting.executeScript(
+            const status = document.getElementById("excalidraw-status")
+            status.textContent = "Not on excalidraw.com"
+            return
+
+        }
+
+        const res = await chrome.scripting.executeScript(
             { target: {
                 tabId: tab.id
             },
@@ -19,8 +25,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return localStorage['excalidraw']
                 } 
             }, 
-            (res) => console.log(res[0].result),
         )
+
+        const status = document.getElementById("excalidraw-status")
+        status.textContent = "Found excalidraw content:"
+
+        const tag = document.getElementById("excalidraw-tag")
+        tag.textContent = JSON.stringify(JSON.parse(res[0].result), null, 4)
+
+
+        console.log(res[0].result)
 
     } 
     catch(err) {
