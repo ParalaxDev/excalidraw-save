@@ -1,5 +1,7 @@
 import { createEffect, createSignal } from "solid-js"
 
+import { getExcalidrawFromLocalStorage } from "./utils/localstorage"
+
 function App() {
 
   const [status, setStatus] = createSignal("Loading excalidraw content...")
@@ -7,27 +9,13 @@ function App() {
 
   createEffect(async () => {
 
-    console.log("test")
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    const tab = tabs[0];
+    const {res, status} = await getExcalidrawFromLocalStorage()
 
-    if (tab.url != "https://excalidraw.com/") {
-      setStatus("Not on excalidraw.com")
-      return
+    if (status == "error") setStatus(res)
+    else {
+      setStatus("Successfully loaded content")
+      setContent(res)
     }
-
-    const res = await chrome.scripting.executeScript(
-      { target: {
-        tabId: tab.id ?? 0
-      },
-
-        func: () => {
-          return localStorage['excalidraw']
-        } 
-      }, 
-    )
-
-    setContent(res[0].result)
   })
 
   return (
