@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { ExcalidrawSave, getAllFromLocalStorage, getExcalidrawFromSite, saveToLocalStorage } from "./utils/localstorage"
+import { exportToSvg } from '@excalidraw/excalidraw'
 
 function App() {
 
   const [status, setStatus] = useState("Loading excalidraw content...")
   const [content, setContent] = useState("")
   const [saves, setSaves] = useState<ExcalidrawSave[]>([])
+  const ref = useRef<any>();
 
 
   useEffect(() => {
@@ -16,6 +18,7 @@ function App() {
       else {
         setStatus("Successfully loaded content")
         setContent(res)
+        console.log(res)
       }
 
       const allSaves = await getAllFromLocalStorage()
@@ -23,6 +26,11 @@ function App() {
       console.log(allSaves)
 
       setSaves(allSaves)
+      
+      const svg = await exportToSvg({elements: allSaves[0].content, files: null})
+      console.log('svg', svg)
+      console.log('json', allSaves[0].content)
+      ref.current.appendChild(svg)
     }
 
     main()
@@ -46,6 +54,7 @@ function App() {
           return <li>{save.id}</li>
         }) : <li>loading...</li>}
       </ul>
+      <div ref={ref} />
       
     </>
   )
