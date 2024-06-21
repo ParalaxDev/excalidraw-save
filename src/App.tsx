@@ -1,28 +1,37 @@
-import { createEffect, createSignal } from "solid-js"
+import { createEffect, createSignal, For } from "solid-js"
 
-import { getExcalidrawFromLocalStorage } from "./utils/localstorage"
+import { ExcalidrawSave, getAllFromLocalStorage, getExcalidrawFromSite, saveToLocalStorage } from "./utils/localstorage"
 
 function App() {
 
-  const [status, setStatus] = createSignal("Loading excalidraw content...")
+  const [_status, setStatus] = createSignal("Loading excalidraw content...")
   const [content, setContent] = createSignal("")
+  const [saves, setSaves] = createSignal<ExcalidrawSave[]>()
 
   createEffect(async () => {
 
-    const {res, status} = await getExcalidrawFromLocalStorage()
+    const {res, status} = await getExcalidrawFromSite()
 
     if (status == "error") setStatus(res)
     else {
       setStatus("Successfully loaded content")
       setContent(res)
     }
+
+    const allSaves = await getAllFromLocalStorage()
+
+    setSaves(allSaves)
   })
 
   return (
     <>
       <h1>Excalidraw Save</h1>
-      <p>{status()}</p>
-      <code>{content()}</code>
+      <button onClick={() => saveToLocalStorage({name:'test', content: JSON.parse(content())})}>Save</button>
+      <button onClick={() => chrome.storage.local.set({'local_saves': []})}>Reset</button>
+      <ul>
+      <For each={saves()}>{(save: ExcalidrawSave) => 
+        <li>{save.id}</li>
+      }</For></ul>
     </>
   )
 }

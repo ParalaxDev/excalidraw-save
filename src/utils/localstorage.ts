@@ -1,4 +1,7 @@
-type ExcalidrawReturnType = {
+import { nanoid } from "nanoid"
+import { sha256 } from "js-sha256"
+
+type ReturnType = {
   res: string,
   status: 'success' | 'error'
 }
@@ -6,16 +9,17 @@ type ExcalidrawReturnType = {
 
 export type ExcalidrawSave = {
   id: string,
+  type: 'old' | 'current',
   name: string,
   hash: string,
   version: number,
-  previousVersions?: ExcalidrawSave[]
+  previousVersions?: string[]
   createdAt: number,
   updatedAt: number,
-  content: string
+  content: Record<string, any>
 }
 
-export const getExcalidrawFromLocalStorage = async (): Promise<ExcalidrawReturnType> => {
+export const getExcalidrawFromSite = async (): Promise<ReturnType> => {
 
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const tab = tabs[0];
@@ -43,4 +47,40 @@ export const getExcalidrawFromLocalStorage = async (): Promise<ExcalidrawReturnT
     status: 'success'
   }
 
+}
+
+
+export const saveToLocalStorage = async ({name, content}: {name: string, content: Record<string, any>}): Promise<ReturnType> => {
+  const id = nanoid()
+
+  const oldSaves = await chrome.storage.local.get('local_saves')
+  
+
+  const saveObject: ExcalidrawSave = {
+    id,
+    type: 'current',
+    name,
+    hash: sha256(JSON.stringify(content)),
+    version: 0,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    content
+  }
+
+  oldSaves.local_saves.push(saveObject)
+
+  await chrome.storage.local.set({'local_saves': oldSaves.local_saves})
+
+  return {
+    res: '',
+    status: 'success'
+  }
+
+}
+
+export const getAllFromLocalStorage = async () => {
+
+  const oldSaves = await chrome.storage.local.get('local_saves')
+
+  return oldSaves.local_saves
 }
