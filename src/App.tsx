@@ -1,13 +1,12 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { ExcalidrawSave, getAllFromLocalStorage, getExcalidrawFromSite, saveToLocalStorage } from "./utils/localstorage"
-import { exportToSvg } from '@excalidraw/excalidraw'
+import { SaveElement } from './components/SaveElement'
 
 function App() {
 
   const [status, setStatus] = useState("Loading excalidraw content...")
   const [content, setContent] = useState("")
   const [saves, setSaves] = useState<ExcalidrawSave[]>([])
-  const ref = useRef<any>();
 
 
   useEffect(() => {
@@ -27,10 +26,6 @@ function App() {
 
       setSaves(allSaves)
       
-      const svg = await exportToSvg({elements: allSaves[0].content, files: null})
-      console.log('svg', svg)
-      console.log('json', allSaves[0].content)
-      ref.current.appendChild(svg)
     }
 
     main()
@@ -39,6 +34,7 @@ function App() {
 
    return (
     <>
+      <p>build: {Date.now()}</p>
       <h1>Excalidraw Save</h1>
       <p>{status}</p>
       <button onClick={async () => {
@@ -51,11 +47,9 @@ function App() {
       <button onClick={() => chrome.storage.local.set({'local_saves': []})}>Reset</button>
       <ul>
         {saves.length > 0 ? saves.map((save) => {
-          return <li>{save.id}</li>
-        }) : <li>loading...</li>}
+          return <SaveElement save={save}/>
+        }) : null}
       </ul>
-      <div ref={ref} />
-      
     </>
   )
 
