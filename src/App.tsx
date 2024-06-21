@@ -4,7 +4,7 @@ import { SaveElement } from './components/SaveElement'
 
 function App() {
 
-  const [status, setStatus] = useState("Loading excalidraw content...")
+  const [_status, setStatus] = useState("Loading excalidraw content...")
   const [content, setContent] = useState("")
   const [saves, setSaves] = useState<ExcalidrawSave[]>([])
 
@@ -33,10 +33,17 @@ function App() {
   }, [])
 
    return (
-    <>
-      <p>build: {Date.now()}</p>
-      <h1>Excalidraw Save</h1>
-      <p>{status}</p>
+    <div className="w-[48rem] h-[72rem] p-4 flex flex-col justify-between">
+      <div>
+      <h1 className='text-3xl mb-4 font-bold'>Excalidraw Save</h1>
+      <div className='grid grid-cols-2 gap-2'>
+        {saves.length > 0 ? saves.map((save) => {
+          return <SaveElement save={save}/>
+        }) : null}
+      </div>
+      </div>
+      
+      <div>
       <button onClick={async () => {
         saveToLocalStorage({name:'test', content: JSON.parse(content)})
         const allSaves = await getAllFromLocalStorage()
@@ -45,12 +52,9 @@ function App() {
 
       }}>Save</button>
       <button onClick={() => chrome.storage.local.set({'local_saves': []})}>Reset</button>
-      <ul>
-        {saves.length > 0 ? saves.map((save) => {
-          return <SaveElement save={save}/>
-        }) : null}
-      </ul>
-    </>
+      <p>build: {new Date().toTimeString()}</p>
+      </div>
+    </div>
   )
 
 }
