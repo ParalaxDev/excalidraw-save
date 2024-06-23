@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { ExcalidrawSave, getAllFromLocalStorage, getExcalidrawFromSite, saveToLocalStorage } from "./utils/localstorage"
-import { SaveElement } from './components/SaveElement'
+import { ExcalidrawSave, getAllFromLocalStorage, getExcalidrawFromSite, saveToLocalStorage } from "../utils/localstorage"
+import { SaveElement } from '../components/SaveElement'
 
-function App() {
+export const Root = () => {
 
   const [_status, setStatus] = useState("Loading excalidraw content...")
   const [content, setContent] = useState("")
@@ -35,7 +35,7 @@ function App() {
    return (
     <div className="w-[48rem] h-[72rem] p-4 flex flex-col justify-between">
       <div>
-      <h1 className='text-3xl mb-4 font-bold'>Excalidraw Save</h1>
+      <h1 className='text-4xl mb-4 font-bold'>Excalidraw Save</h1>
       <div className='grid grid-cols-2 gap-2'>
         {saves.length > 0 ? saves.map((save) => {
           return <SaveElement save={save}/>
@@ -59,4 +59,3 @@ function App() {
 
 }
 
-export default App

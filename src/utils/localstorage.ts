@@ -50,7 +50,7 @@ export const getExcalidrawFromSite = async (): Promise<ReturnType> => {
 
 }
 
-export const injectExcalidrawIntoSite = async (_content: ExcalidrawElement[]) => {
+export const injectExcalidrawIntoSite = async (_content: ExcalidrawElement[], tabId = -1) => {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const tab = tabs[0];
 
@@ -63,9 +63,11 @@ export const injectExcalidrawIntoSite = async (_content: ExcalidrawElement[]) =>
 
   const json = JSON.stringify(_content)
 
+  console.log(tabId != -1 ? tabId : tab.id ?? 0)
+
   const res = await chrome.scripting.executeScript({
     target: {
-      tabId: tab.id ?? 0
+      tabId: tabId != -1 ? tabId : tab.id ?? 0
     },
     args: [json],
 
@@ -92,6 +94,11 @@ export const injectExcalidrawIntoSite = async (_content: ExcalidrawElement[]) =>
 
 }
 
+export const getCurrentTabUrl = async () => {
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  
+  return tabs[0].url
+}
 
 export const saveToLocalStorage = async ({name, content}: {name: string, content: ExcalidrawElement[]}): Promise<ReturnType> => {
   const id = nanoid()
