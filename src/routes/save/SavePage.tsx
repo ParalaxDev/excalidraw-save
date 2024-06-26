@@ -1,26 +1,34 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
-import { ExcalidrawSave, injectExcalidrawIntoSite, getExcalidrawFromSite, getSaveFromLocalStorage, updateSaveToLocalStorage } from "../../utils/localstorage";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom"
+import { ExcalidrawSave, injectExcalidrawIntoSite, getExcalidrawFromSite, getSaveFromLocalStorage, updateSaveToLocalStorage, setEditingId } from "../../utils/localstorage";
 import { Thumbnail } from "../../components/Thumbnail";
 import { PreviousVersion } from "../../components/PreviousVersion";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { nanoid } from "nanoid";
 import { sha256 } from "js-sha256";
+
+
 export const SavePage = () => {
 
   const { id } = useParams();
+  const [searchParams, _setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [save, setSave] = useState<ExcalidrawSave | null>(null)
+  const [saveName, setSaveName] = useState('')
 
   useEffect(() => {
     const main = async () => {
 
       const res = await getSaveFromLocalStorage(id ?? '')
 
-      setSave(res)
-
       if (res === null) return
 
-      await injectExcalidrawIntoSite(res.content)
+      setSave(res)
+      setSaveName(res!.name)
+      setEditingId(res.id)
+
+      if (searchParams.get('reload') === 'true') await injectExcalidrawIntoSite(res.content)
+
     }
 
     main()
@@ -32,7 +40,19 @@ export const SavePage = () => {
   return (
 
     <>
-      <h1 className='text-4xl mb-4 font-bold text-black'>{save?.name}</h1>
+      <button onClick={() => {
+        setEditingId('')
+        navigate(-1)
+      }}>Back</button>
+      <input type="text" className='text-4xl mb-4 font-bold text-black' value={saveName} onChange={async (e) => {
+        setSaveName(e.target.value)
+
+        const oldSave = save
+        oldSave.name = e.target.value
+
+        setSave(oldSave)
+        await updateSaveToLocalStorage(oldSave)
+      }} />
       <div className="border w-full p-4 rounded-[1rem]">
       <Thumbnail saveContents={save.content}/>
       </div>
@@ -70,6 +90,8 @@ export const SavePage = () => {
 
         await updateSaveToLocalStorage(oldSave)
         await updateSaveToLocalStorage(newSave)
+
+        setEditingId(newSave.id)
 
       }}>Update Save</button>
     </>

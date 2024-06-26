@@ -162,3 +162,13 @@ export const getSaveFromLocalStorage = async (id: string): Promise<ExcalidrawSav
 
   return selected[0]
 }
+
+
+export const setEditingId = async (id: string) => {
+  chrome.storage.local.set({'editing': id})
+}
+
+export const getEditingId = async () => {
+  const res = await chrome.storage.local.get('editing')
+  return res.editing
+}

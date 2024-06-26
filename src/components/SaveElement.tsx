@@ -25,7 +25,7 @@ export const SaveElement = ({save} :{save: ExcalidrawSave}) => {
         <Thumbnail saveContents={save.content}/>
       </div>
       <div>
-        <Link to={`/save/${save.id}`} className='flex w-full bg-black text-white h-8 rounded-[.5rem] flex justify-center items-center hover:cursor-pointer hover:bg-neutral-700 transition-all mt-1'>
+        <Link to={`/save/${save.id}?reload=true`} className='flex w-full bg-black text-white h-8 rounded-[.5rem] flex justify-center items-center hover:cursor-pointer hover:bg-neutral-700 transition-all mt-1'>
           <div className="flex justify-center items-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-4">
               <path fillRule="evenodd" d="M14.78 14.78a.75.75 0 0 1-1.06 0L6.5 7.56v5.69a.75.75 0 0 1-1.5 0v-7.5A.75.75 0 0 1 5.75 5h7.5a.75.75 0 0 1 0 1.5H7.56l7.22 7.22a.75.75 0 0 1 0 1.06Z" clipRule="evenodd" />
