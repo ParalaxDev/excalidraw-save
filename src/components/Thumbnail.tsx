@@ -14,8 +14,8 @@ export const Thumbnail = ({saveContents}: {saveContents: ExcalidrawElement[]}) =
 
       const svg = await exportToSvg({elements: saveContents, files: null})
 
-      svg.setAttribute('width', 'auto')
-      svg.setAttribute('height', 'auto')
+      svg.setAttribute('width', '100%')
+      svg.setAttribute('height', '100%')
       thumbnail.current.appendChild(svg)
 
     }

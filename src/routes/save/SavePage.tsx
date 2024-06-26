@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
-import { ExcalidrawSave, getExcalidrawFromSite, getSaveFromLocalStorage, updateSaveToLocalStorage } from "../../utils/localstorage";
+import { ExcalidrawSave, injectExcalidrawIntoSite, getExcalidrawFromSite, getSaveFromLocalStorage, updateSaveToLocalStorage } from "../../utils/localstorage";
 import { Thumbnail } from "../../components/Thumbnail";
 import { PreviousVersion } from "../../components/PreviousVersion";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
@@ -18,24 +18,29 @@ export const SavePage = () => {
 
       setSave(res)
 
+      if (res === null) return
+
+      await injectExcalidrawIntoSite(res.content)
     }
 
     main()
 
-  }, [id, save])
+  }, [id])
 
   if (save === null) return (<h1>No save with that ID found</h1>)
 
   return (
 
     <>
-      <h1>{save?.name}</h1>
+      <h1 className='text-4xl mb-4 font-bold text-black'>{save?.name}</h1>
+      <div className="border w-full p-4 rounded-[1rem]">
       <Thumbnail saveContents={save.content}/>
-      <h2>Previous Versions:</h2>
+      </div>
+      <h2 className='text-xl my-4 font-bold text-neutral-500'>Previous Versions:</h2>
 
-      {save.previousVersions.length > 0 ? save.previousVersions.map((previousId: string) => (
+      {save.previousVersions.length > 0 ? <div className='grid grid-cols-2 gap-2'>{save.previousVersions.map((previousId: string) => (
         <PreviousVersion id={previousId}/>
-      )) : <p>No previous versions found</p>}
+      ))}</div> : <p className="w-full text-center">No previous versions found</p>}
 
       <button onClick={async () => {
         const oldSave = save

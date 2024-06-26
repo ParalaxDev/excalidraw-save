@@ -16,15 +16,15 @@ export const PreviousVersion = ({id} :{id: string | undefined}) => {
       const res = await getSaveFromLocalStorage(id ?? '')
 
       setSave(res)
-
+      
     }
 
     main()
 
   }, [id])
 
-  if (save === null) return (<h1>No save with that ID found</h1>)
 
+  if (save === null) return (<h1>No save with that ID found</h1>)
 
   return (
     <div className="w-full border p-4 rounded-[1rem] flex justify-between flex-col">
@@ -32,7 +32,7 @@ export const PreviousVersion = ({id} :{id: string | undefined}) => {
         <div className="flex justify-between items-center w-fill">
           <div>
             <h1 className='text-xl font-bold'>{save.name}</h1>
-            <p className="text-xs text-neutral-600">Last updated {formatDistance(new Date(save.updatedAt), new Date())}</p>
+            <p className="text-xs text-neutral-600 mb-1">Last updated {formatDistance(new Date(save.updatedAt), new Date())}</p>
           </div>
           <div>
             <a className="text-neutral-400 hover:text-red-500 transition-all hover:cursor-pointer">

@@ -50,7 +50,7 @@ export const getExcalidrawFromSite = async (): Promise<ReturnType> => {
 
 }
 
-export const injectExcalidrawIntoSite = async (_content: ExcalidrawElement[], tabId = -1) => {
+export const injectExcalidrawIntoSite = async (_content: ExcalidrawElement[], _tabId = -1) => {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const tab = tabs[0];
 
@@ -63,11 +63,10 @@ export const injectExcalidrawIntoSite = async (_content: ExcalidrawElement[], ta
 
   const json = JSON.stringify(_content)
 
-  console.log(tabId != -1 ? tabId : tab.id ?? 0)
 
   const res = await chrome.scripting.executeScript({
     target: {
-      tabId: tabId != -1 ? tabId : tab.id ?? 0
+      tabId: tab.id ?? 0
     },
     args: [json],
 
@@ -82,8 +81,6 @@ export const injectExcalidrawIntoSite = async (_content: ExcalidrawElement[], ta
       // }
     } 
   })
-
-  console.log(res)
 
   chrome.tabs.reload(tab.id ?? 0)
 
