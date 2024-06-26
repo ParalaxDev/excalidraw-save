@@ -42,7 +42,7 @@ export const SavePage = () => {
     <>
       <button onClick={() => {
         setEditingId('')
-        navigate(-1)
+        navigate(`/?redirect=false`)
       }}>Back</button>
       <input type="text" className='text-4xl mb-4 font-bold text-black' value={saveName} onChange={async (e) => {
         setSaveName(e.target.value)

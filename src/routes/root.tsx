@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { ExcalidrawSave, getAllFromLocalStorage, getEditingId, getExcalidrawFromSite, saveToLocalStorage, setEditingId } from "../utils/localstorage"
 import { SaveElement } from '../components/SaveElement'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { sha256 } from 'js-sha256'
+import { searchForValueInSave } from '../utils/helpers'
 
 export const Root = () => {
 
@@ -9,6 +11,7 @@ export const Root = () => {
   const [content, setContent] = useState("")
   const [saves, setSaves] = useState<ExcalidrawSave[]>([])
   const navigate = useNavigate()
+  const [searchParams, _setSearchParams] = useSearchParams()
 
 
   useEffect(() => {
@@ -18,6 +21,7 @@ export const Root = () => {
         console.log('navigating to ', `/save/${lastEditing}`)
         navigate(`/save/${lastEditing}?reload=false`)
       } else setEditingId('')
+
       const {res, status} = await getExcalidrawFromSite()
 
       if (status == "error") setStatus(res)
@@ -29,7 +33,19 @@ export const Root = () => {
 
       const allSaves = await getAllFromLocalStorage()
 
-      console.log(allSaves)
+      const hash = sha256(res)
+
+      const searched = searchForValueInSave(allSaves, 'hash', hash)
+
+      if (searched.length > 0 && searchParams.get('redirect') !== 'false') {
+
+        console.log('navigating to ', `/save/${lastEditing}`)
+        navigate(`/save/${searched[0].id}?reload=false`)
+
+      }
+
+
+
 
       setSaves(allSaves)
       
