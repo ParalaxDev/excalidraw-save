@@ -172,3 +172,8 @@ export const getEditingId = async () => {
   const res = await chrome.storage.local.get('editing')
   return res.editing
 }
+
+export const replaceAllInLocalStorage = (newSaves: ExcalidrawSave[]) => {
+  chrome.storage.local.remove('local_saves')
+  chrome.storage.local.set({'local_saves': newSaves})
+}
