@@ -36,7 +36,11 @@ export const SavePage = () => {
 
   }, [id])
 
-  if (save === null) return (<h1>No save with that ID found</h1>)
+  if (save === null) {
+    setEditingId('')
+    navigate('/')
+    return
+  }
 
   return (
 
