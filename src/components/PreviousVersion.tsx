@@ -1,9 +1,30 @@
+
 import { type ExcalidrawSave } from '../utils/localstorage'
 import { formatDistance } from 'date-fns'
 import { Link } from "react-router-dom";
 import { Thumbnail } from './Thumbnail';
+import { useState, useEffect } from 'react';
+import { getSaveFromLocalStorage } from '../utils/localstorage';
 
-export const SaveElement = ({save} :{save: ExcalidrawSave}) => {
+export const PreviousVersion = ({id} :{id: string | undefined}) => {
+
+  const [save, setSave] = useState<ExcalidrawSave | null>(null)
+
+  useEffect(() => {
+    const main = async () => {
+
+      const res = await getSaveFromLocalStorage(id ?? '')
+
+      setSave(res)
+
+    }
+
+    main()
+
+  }, [id])
+
+  if (save === null) return (<h1>No save with that ID found</h1>)
+
 
   return (
     <div className="w-full border p-4 rounded-[1rem] flex justify-between flex-col">

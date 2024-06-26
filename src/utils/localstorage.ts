@@ -14,7 +14,7 @@ export type ExcalidrawSave = {
   name: string,
   hash: string,
   version: number,
-  previousVersions?: string[]
+  previousVersions: string[]
   createdAt: number,
   updatedAt: number,
   content: ExcalidrawElement[]
@@ -111,6 +111,7 @@ export const saveToLocalStorage = async ({name, content}: {name: string, content
     type: 'current',
     name,
     hash: sha256(JSON.stringify(content)),
+    previousVersions: [],
     version: 0,
     createdAt: Date.now(),
     updatedAt: Date.now(),
@@ -128,9 +129,39 @@ export const saveToLocalStorage = async ({name, content}: {name: string, content
 
 }
 
+export const updateSaveToLocalStorage = async (save: ExcalidrawSave) => {
+
+  const oldSaves = await chrome.storage.local.get('local_saves')
+
+  const filtered = oldSaves.local_saves.filter((oldsave:ExcalidrawSave) => oldsave.id != save.id)
+  console.log(filtered)
+  filtered.push(save)
+
+  await chrome.storage.local.set({'local_saves': filtered})
+
+
+  console.log('saving', save)
+
+  
+}
+
 export const getAllFromLocalStorage = async () => {
 
   const oldSaves = await chrome.storage.local.get('local_saves')
 
   return oldSaves.local_saves
+}
+
+type LocalStorageReturn = {
+  local_saves: ExcalidrawSave[]
+}
+
+export const getSaveFromLocalStorage = async (id: string): Promise<ExcalidrawSave | null> => {
+
+  const saves = await chrome.storage.local.get('local_saves') as LocalStorageReturn
+  const selected = saves.local_saves.filter((save: ExcalidrawSave) =>  save.id == id)
+
+  if (selected.length <= 0) return null
+
+  return selected[0]
 }

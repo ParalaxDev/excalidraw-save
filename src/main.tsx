@@ -4,6 +4,7 @@ import './index.css'
 import { Root } from './routes/root.tsx'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { RootLayout } from './routes/RouteLayout.tsx'
+import { SavePage } from './routes/save/SavePage.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -11,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" element={<RootLayout/>}>
           <Route index element={<Root />}/>
-          <Route path="/save/:id" element={<h1>Save File</h1>}/>
+          <Route path="/save/:id" element={<SavePage />}/>
         </Route>
       </Routes>
     </MemoryRouter>

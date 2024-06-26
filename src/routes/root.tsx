@@ -38,7 +38,7 @@ export const Root = () => {
       <h1 className='text-4xl mb-4 font-bold'>Excalidraw Save</h1>
       <div className='grid grid-cols-2 gap-2'>
         {saves.length > 0 ? saves.map((save) => {
-          return <SaveElement save={save}/>
+            if (save.type == 'current') return <SaveElement save={save}/>
         }) : null}
       </div>
       </div>
